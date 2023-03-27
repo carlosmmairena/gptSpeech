@@ -15,3 +15,6 @@ Please install the software portaudio and restart the computer.
 Alternatively, you can try installing a precompiled pyaudio package using pipwin. First, install pipwin:
 
 pip install pipwin
+
+
+
