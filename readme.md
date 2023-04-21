@@ -1,20 +1,15 @@
 # GPT Speech text
 Talk to your own assistant.
 
-
 Before run this script, install the following packages:
-### For Linux
+
+### For Linux Servers
 sudo apt-get install portaudio19-dev
+sudo apt-get install ffmpeg
 
-### For MacOS
-brew install portaudio
+### For MacOS Servers
+brew install portaudio 
 brew install flac
+brew install ffmpeg
 
-### For Windows
-Please install the software portaudio and restart the computer.
-Alternatively, you can try installing a precompiled pyaudio package using pipwin. First, install pipwin:
-
-pip install pipwin
-
-
-
+Set the env "OPENAI_API_KEY" 
