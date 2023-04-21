@@ -3,6 +3,7 @@ import tempfile
 import speech_recognition as speechrecog
 import openai
 import whisper
+from gtts import gTTS
 
 
 def recognize_speech_from_mic(recognizer: speechrecog.Recognizer, microphone: speechrecog.Microphone):
@@ -29,8 +30,13 @@ def recognize_speech_with_whisper(audio_data):
     return transcript["text"]
 
 def send_to_completion(text : str):
-    response = openai.Completion.create(model="text-davinci-003", prompt=text, temperature=0.6, max_tokens=50)
-    return response
+    response = openai.Completion.create(model="text-davinci-003", prompt=text, temperature=0.5, max_tokens=50)
+    text_response = response["choices"][0]["text"]
+    return text_response
+
+def text_to_voice(text : str):
+    tts = gTTS(text, lang='es')
+    tts.save('response.mp3')
 
 
 
@@ -46,12 +52,13 @@ def main():
         if audio_transcripted:
             print("Has dicho: {}".format(audio_transcripted))
             if (audio_transcripted == "salir" or audio_transcripted == "exit" or audio_transcripted == "cerrar"):
-                is_running = False
                 return
             else:
                 response_by_ai = send_to_completion(audio_transcripted)
                 print(response_by_ai)
+                text_to_voice(response_by_ai)
                 #print("AI Te ha respondido: {}".format(response_by_ai))
+            is_running = False
         else:
             print("No te hemos entendido...")
 
