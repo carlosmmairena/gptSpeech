@@ -1,10 +1,11 @@
 import os
-import tempfile
-import speech_recognition as speechrecog
+import time
 import openai
 import whisper
+import tempfile
 from gtts import gTTS
 from playsound import playsound
+import speech_recognition as speechrecog
 
 
 # Listen the voice from mic
@@ -51,7 +52,32 @@ def text_to_voice(text : str):
 
 
 
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def run_animation():
+    frames = [
+        "    O  \n   /|\\\n   / \\\n",
+        "  _O   \n  /|\\  \n  / \\  \n",
+        "   O_  \n  /|\\  \n  / \\  \n"
+    ]
+
+    start_time = time.time()
+    duration = 3
+
+    while time.time() - start_time < duration:
+        for frame in frames:
+            if time.time() - start_time >= duration:
+                break
+            clear_screen()
+            print(frame)
+            time.sleep(0.2)
+
+
+
 def main():
+    run_animation()
+    
     recognizer = speechrecog.Recognizer()
     microphone = speechrecog.Microphone()
     is_running = True
@@ -79,6 +105,8 @@ def main():
                 text_to_voice(response_by_ai)
         else:
             print("No te hemos entendido...")
+        clear_screen()
+        
 
 
 
