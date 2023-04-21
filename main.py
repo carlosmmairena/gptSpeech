@@ -5,7 +5,7 @@ import openai
 import whisper
 from gtts import gTTS
 
-
+# Listen the voice from mic
 def recognize_speech_from_mic(recognizer: speechrecog.Recognizer, microphone: speechrecog.Microphone):
     with microphone as source:
         print("Ajustando micrófono al ruido del ambiente...")
@@ -15,7 +15,7 @@ def recognize_speech_from_mic(recognizer: speechrecog.Recognizer, microphone: sp
         audio = recognizer.listen(source)
         return audio.get_wav_data()
 
-
+# Recognize the audio from mic to whisper to get the text
 def recognize_speech_with_whisper(audio_data):
     openai.api_key = os.environ["OPENAI_API_KEY"]
 
@@ -29,11 +29,13 @@ def recognize_speech_with_whisper(audio_data):
 
     return transcript["text"]
 
+# Send to chatgpt to get a completion
 def send_to_completion(text : str):
     response = openai.Completion.create(model="text-davinci-003", prompt=text, temperature=0.5, max_tokens=50)
     text_response = response["choices"][0]["text"]
     return text_response
 
+# Use the Google Text Voice to generate audio for the text completion
 def text_to_voice(text : str):
     tts = gTTS(text, lang='es')
     tts.save('response.mp3')
