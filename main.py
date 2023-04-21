@@ -4,6 +4,8 @@ import speech_recognition as speechrecog
 import openai
 import whisper
 from gtts import gTTS
+from playsound import playsound
+
 
 # Listen the voice from mic
 def recognize_speech_from_mic(recognizer: speechrecog.Recognizer, microphone: speechrecog.Microphone):
@@ -31,14 +33,17 @@ def recognize_speech_with_whisper(audio_data):
 
 # Send to chatgpt to get a completion
 def send_to_completion(text : str):
-    response = openai.Completion.create(model="text-davinci-003", prompt=text, temperature=0.5, max_tokens=50)
+    response = openai.Completion.create(model="text-davinci-003", prompt=text, temperature=0.5, max_tokens=100)
     text_response = response["choices"][0]["text"]
     return text_response
 
-# Use the Google Text Voice to generate audio for the text completion
+# Use the Google Text Voice to generate audio for the text completion and reproduce it
 def text_to_voice(text : str):
+    file_name = 'response.mp3'
     tts = gTTS(text, lang='es')
-    tts.save('response.mp3')
+    tts.save(file_name)
+    playsound(file_name)
+    os.remove(file_name)
 
 
 
@@ -53,14 +58,20 @@ def main():
 
         if audio_transcripted:
             print("Has dicho: {}".format(audio_transcripted))
-            if (audio_transcripted == "salir" or audio_transcripted == "exit" or audio_transcripted == "cerrar"):
-                return
+            if (
+                audio_transcripted.endswith("salir") or audio_transcripted.endswith("salir.") or
+                audio_transcripted.endswith("fin") or audio_transcripted.endswith("fin.") or
+                audio_transcripted.endswith("bye") or audio_transcripted.endswith("bye.") or
+                audio_transcripted.endswith("exit") or audio_transcripted.endswith("exit.") or
+                audio_transcripted.endswith("gracias") or audio_transcripted.endswith("gracias.") or
+                audio_transcripted.endswith("thank you") or audio_transcripted.endswith("thank you.") or
+                audio_transcripted.endswith("cerrar") or audio_transcripted.endswith("cerrar.")
+            ):
+                is_running = False
             else:
                 response_by_ai = send_to_completion(audio_transcripted)
-                print(response_by_ai)
+                print("AI Te ha respondido: {}".format(response_by_ai))
                 text_to_voice(response_by_ai)
-                #print("AI Te ha respondido: {}".format(response_by_ai))
-            is_running = False
         else:
             print("No te hemos entendido...")
 
